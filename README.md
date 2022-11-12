@@ -4,3 +4,5 @@
 2. use the model the identify defects and visualise using Grad-CAM
 3. manipulate the camera intrinsic and extrinsic parameters to quantitatively calculate the defect location
 4. you can reconstruct you model either use colmap or open3d instead or even python (see 3 worldCor) to combined the 3D and 2D information
+
+Note: input data could be the paired RGB and depth, or ROSBAG if you choose OPEN3D
