@@ -32,9 +32,6 @@ if require_traje:
         trans = trans['column'].str.split(' ', expand=True).astype(float)
         trans = np.array(trans)
         # trans = np.dot(colour2depth, trans)
-        '''These are poses (i.e., camera to world transformation). 
-        Extrinsics are their inverse (i.e., world to camera transformation). So after an inversion you can refer to this answer
-        trajectory得到的是poses,先要做一边inverse之后才能提取rotation和translation: https://github.com/isl-org/Open3D/issues/2778'''
         trans = np.linalg.inv(trans)
         # print(trans, type(trans))
         result.append(trans)
@@ -52,7 +49,6 @@ if require_traje:
 
 
 
-'''用depth，color，intrinsics，extrinsics投影生成点云，这样就和open3d算出来的模型的尺寸和geometry是一样的，如果用open3d，2次由于gradcam数据不同的话，其实生成的模型会不同'''
 require_pcd = False
 if require_pcd:
     vertices = []
@@ -125,7 +121,6 @@ if require_pcd:
 
 
 
-'''算出gradcam highlight的defects的centroid，然后用过intrinsics和extrinsics把这个centroid的世界坐标算出来'''
 require_worldXYZ = True
 if require_worldXYZ:
     def color_coordinates(rgb, filename):
@@ -159,16 +154,13 @@ if require_worldXYZ:
     depth = r"C:\Users\SmartLab\Desktop\traditional recon and CAM\3d_Recon\rosbag\HDB1\depth\00116.png"
     scale = 1000
     height, width = 720, 1280
-    # (255,255,0,255) 是我们要从这个图片找的颜色，如果gradcam用的是黄色就这个，如果红色就 (255,0,0,255)
     centroid, peripheral = color_coordinates((255,255,0,255), color_cam) # check overlay color rgb: https://imagecolorpicker.com/en
     print(centroid)
 
-    # doublecheck算出来的centroid是在对应的highlight区域的中心点，或者手动用网上工具对比一下：https://pixspy.com/
     points_colour = (0, 0, 0) # centroid颜色
     centroid_colour = (255, 0, 255)
     image = cv2.imread(color_cam)
 
-     # 标注所有的外围点
     for p in peripheral[::305]:
       image = cv2.circle(image, p, radius=0, color=points_colour, thickness=5)
     cv2.imwrite(r"C:\Users\SmartLab\Desktop\final_pointsArray.png", image)
